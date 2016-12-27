@@ -1,0 +1,43 @@
+教程三、安装Mysql
+
+1. 下载mysql的repo源
+	$ wget http://repo.mysql.com/mysql-community-release-el7-5.noarch.rpm 稍等...
+
+2. 安装mysql-community-release-el7-5.noarch.rpm包
+	$ sudo rpm -ivh mysql-community-release-el7-5.noarch.rpm
+	(安装这个包后，会获得两个mysql的yum repo源：/etc/yum.repos.d/mysql-community.repo，/etc/yum.repos.d/mysql-community-source.repo)
+
+3. 安装mysql
+	$ sudo yum install mysql-server 稍等...
+
+4. 重置密码
+	重置密码前，首先要登录
+	$ mysql -u root
+	(登录时有可能报这样的错：ERROR 2002 (HY000): Can‘t connect to local MySQL server through socket ‘/var/lib/mysql/mysql.sock‘ (2)，原因是/var/lib/mysql的访问权限问题。)
+	下面的命令把/var/lib/mysql的拥有者改为当前用户：
+	$ sudo chown -R root:root /var/lib/mysql
+	然后，重启服务：
+	$ service mysqld restart
+	接下来登录重置密码：
+	$ mysql -u root
+	mysql > use mysql;
+	mysql > update user set password=password(‘123456‘) where user=‘root‘;
+	mysql > exit;
+
+5. 授权登陆MySQL服务器(1130 - Host‘192.168.0.103’is not allowed to connect to this MySQL server)
+	你想root用户名使用root密码从任何主机连接到MySQL服务器的话。
+	运行命令：mysql>GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'root' WITH GRANT OPTION;
+
+
+	如果你想允许用户root从ip为192.168.1.3的主机连接到mysql服务器，并使用root作为密码
+	运行命令：mysql>GRANT ALL PRIVILEGES ON *.* TO 'root'@'192.168.1.3' IDENTIFIED BY 'root' WITH GRANT OPTION;
+	上面的命令创建一个可以从任意机器以root登录的超级账号，口令是root。这样，就可以使用方便的图形工具(navicat for mysql)进行登录和操作，包括修改root的口令。 
+
+至此数据库安装完成。
+
+有时无法使用root账户登陆mysql,
+	解决方法：登陆以后的数据库看起来不对！只有两个数据库：information_schema和openqrm，并且，在进行其它操作时老是出现access denied的错误！
+	mysql -u root -h 192.168.9.53 -p 这样登陆以后显示结果才正常！
+	虽然可以使用上面的方法登陆，数据库显示也正常，但是总归觉得怪怪的，于是继续尝试。试了多次，最后只用了一个命令就解决了这个问题： 
+	drop user root@'localhost';
+	退出mysql，重启Mysql，然后登陆mysql：mysql -uroot -p12345 完全OK！  

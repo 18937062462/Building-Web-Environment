@@ -1,0 +1,23 @@
+教程二、安装jdk和tomcat
+
+安装jdk
+	rpm -ivh [FileName]
+	(-i是安装，-v是校验，-h是用散列符显示安装进度，更多的rpm参数请自行参看手册页：man rpm)
+安装Tomcat
+	tar -zxvf [FileName] //解压.gz文件
+	
+	/*
+	*	*.tar.gz/*.tgz、*.bz2形式的二进制软件包
+	*	安装：tar zxvf *.tar.gz 或 tar yxvf *.bz2
+	*	(参数z是调用gzip解压，x是解包，v是校验，f是显示结果)
+	*	(y是调用bzip2解压，t是列出包的文件清单。更多的参数请参看手册页：man tar)
+	*/
+
+	mv apache-tomcat-7.0.73 tomcat //给文件换个名字
+	rm -fr apache-tomcat-7.0.73.tar.gz //删除文件省的占空间
+	./startup.sh //启动tomcat（此时在浏览器中访问192.168.0.128:8080会失败，因为防火墙的阻拦）
+	
+	关闭firewall
+	systemctl stop firewalld.service //停止firewall
+	systemctl disable firewalld.service //禁止firewall开机启动
+	./startup.sh //启动tomcat

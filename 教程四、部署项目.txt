@@ -1,0 +1,5 @@
+教程四、部署项目
+
+1.配置好db.properties,然后打包
+2.上传至tomcat/webapps/下
+3.重启tomcat服务在浏览器中访问 ok部署项目完成
